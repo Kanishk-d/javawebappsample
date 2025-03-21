@@ -18,27 +18,21 @@
   </properties>
 
   <dependencies>
-    <!-- Jersey core with exclusion to avoid ASM conflicts -->
+    <!-- Jersey core -->
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-server</artifactId>
       <version>${jersey.version}</version>
-      <exclusions>
-        <exclusion>
-          <groupId>jersey.repackaged</groupId>
-          <artifactId>org.objectweb.asm</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
 
-    <!-- Jersey servlet integration -->
+    <!-- Jersey servlet integration (MUST HAVE for REST APIs to work) -->
     <dependency>
       <groupId>org.glassfish.jersey.containers</groupId>
-      <artifactId>jersey-container-servlet-core</artifactId>
+      <artifactId>jersey-container-servlet</artifactId>
       <version>${jersey.version}</version>
     </dependency>
 
-    <!-- Correct ASM dependency -->
+    <!-- ASM dependency for Jersey -->
     <dependency>
       <groupId>org.ow2.asm</groupId>
       <artifactId>asm</artifactId>
@@ -53,7 +47,7 @@
       <scope>provided</scope>
     </dependency>
 
-    <!-- Servlet API (provided by container like Tomcat) -->
+    <!-- Servlet API -->
     <dependency>
       <groupId>javax.servlet</groupId>
       <artifactId>javax.servlet-api</artifactId>
@@ -64,7 +58,7 @@
 
   <build>
     <plugins>
-      <!-- Compiler plugin for Java 11 -->
+      <!-- Java compiler -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -75,7 +69,7 @@
         </configuration>
       </plugin>
 
-      <!-- WAR packaging -->
+      <!-- WAR plugin -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -87,3 +81,4 @@
     </plugins>
   </build>
 </project>
+
