@@ -22,18 +22,27 @@ node {
       def resourceGroup = 'jenkins-get-started-rg'
       def webAppName = '<app_name>'
       // login Azure
-withCredentials([usernamePassword(
-    credentialsId: 'AzureServicePrincipal',
-    usernameVariable: 'AZURE_CLIENT_ID',
-    passwordVariable: 'AZURE_CLIENT_SECRET'
-)]) {
-    sh '''
-        az login --service-principal \
-          --username $AZURE_CLIENT_ID \
-          --password $AZURE_CLIENT_SECRET \
-          --tenant a9e61550-cf79-4349-83d3-dec5440cc70c
-        az account set --subscription a778bbf9-56d1-4e99-b19a-0ecd2b322cf8
-    '''
+stage('deploy') {
+    withCredentials([usernamePassword(
+        credentialsId: 'AzureServicePrincipal',
+        usernameVariable: 'AZURE_CLIENT_ID',
+        passwordVariable: 'AZURE_CLIENT_SECRET'
+    )]) {
+        sh '''
+            az login --service-principal \
+              --username $AZURE_CLIENT_ID \
+              --password $AZURE_CLIENT_SECRET \
+              --tenant a9e61550-cf79-4349-83d3-dec5440cc70c
+
+            az account set --subscription a778bbf9-56d1-4e99-b19a-0ecd2b322cf8
+
+            az webapp deploy \
+              --resource-group jenkins-get-started-rg \
+              --name jenkins-demo-app123 \
+              --src-path target/calculator-1.0.war \
+              --type war
+        '''
+    }
 }
       // get publish settings
       def pubProfilesJson = sh script: "az webapp deployment list-publishing-profiles -g $resourceGroup -n $webAppName", returnStdout: true
