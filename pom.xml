@@ -3,82 +3,80 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <groupId>com.kanishk</groupId>
+  <groupId>ms.kenchen</groupId>
   <artifactId>calculator</artifactId>
   <version>1.0</version>
   <packaging>war</packaging>
-
-  <name>Calculator API</name>
-
-  <properties>
-    <maven.compiler.source>11</maven.compiler.source>
-    <maven.compiler.target>11</maven.compiler.target>
-    <jersey.version>2.22.2</jersey.version>
-  </properties>
-
-  <dependencies>
-    <!-- Jersey core -->
-    <dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-server</artifactId>
-      <version>${jersey.version}</version>
-    </dependency>
-
-    <!-- Jersey servlet integration (MUST HAVE for REST APIs to work) -->
-    <dependency>
-      <groupId>org.glassfish.jersey.containers</groupId>
-      <artifactId>jersey-container-servlet</artifactId>
-      <version>${jersey.version}</version>
-    </dependency>
-
-    <!-- ASM dependency for Jersey -->
-    <dependency>
-      <groupId>org.ow2.asm</groupId>
-      <artifactId>asm</artifactId>
-      <version>9.1</version>
-    </dependency>
-
-    <!-- JAX-RS API -->
-    <dependency>
-      <groupId>javax.ws.rs</groupId>
-      <artifactId>javax.ws.rs-api</artifactId>
-      <version>2.1.1</version>
-      <scope>provided</scope>
-    </dependency>
-
-    <!-- Servlet API -->
-    <dependency>
-      <groupId>javax.servlet</groupId>
-      <artifactId>javax.servlet-api</artifactId>
-      <version>3.1.0</version>
-      <scope>provided</scope>
-    </dependency>
-  </dependencies>
-
   <build>
     <plugins>
-      <!-- Java compiler -->
       <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.1</version>
+        <version>3.11.0</version>
         <configuration>
-          <source>${maven.compiler.source}</source>
-          <target>${maven.compiler.target}</target>
+          <source>11</source>
+          <target>11</target>
         </configuration>
-      </plugin>
-
-      <!-- WAR plugin -->
+      </plugin>    
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
-        <version>3.3.2</version>
+        <version>3.4.0</version>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.jetty</groupId>
+        <artifactId>jetty-maven-plugin</artifactId>
+        <version>11.0.15</version>
         <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml>
+          <webApp>
+            <contextPath>/</contextPath>
+          </webApp>
+          <webAppSourceDirectory>target/${project.artifactId}-${project.version}</webAppSourceDirectory>
+          <stopPort>8079</stopPort>
+          <stopKey>stopit</stopKey>
+          <stopWait>10</stopWait>
+          <httpConnector>
+            <!--<port>8080</port>-->
+            <idleTimeout>60000</idleTimeout>
+          </httpConnector>
         </configuration>
+        <executions>
+          <execution>
+            <id>start-jetty</id>
+            <phase>pre-integration-test</phase>
+            <goals>
+              <goal>start</goal>
+            </goals>
+            <configuration>
+              <scanIntervalSeconds>0</scanIntervalSeconds>
+              <daemon>true</daemon>
+            </configuration>
+          </execution>
+          <execution>
+            <id>stop-jetty</id>
+            <phase>post-integration-test</phase>
+            <goals>
+              <goal>stop</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
     </plugins>
   </build>
+  <dependencies>
+    <dependency>
+      <groupId>org.glassfish.jersey.containers</groupId>
+      <artifactId>jersey-container-servlet-core</artifactId>
+      <version>3.1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.media</groupId>
+      <artifactId>jersey-media-json-jackson</artifactId>
+      <version>3.1.4</version>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-server</artifactId>
+      <version>3.1.4</version>
+    </dependency>
+  </dependencies>
 </project>
-
