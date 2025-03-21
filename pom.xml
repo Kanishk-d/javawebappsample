@@ -2,6 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.kanishk</groupId>
@@ -18,17 +19,24 @@
   </properties>
 
   <dependencies>
-    <!-- Jersey core -->
+    <!-- Jersey core server -->
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-server</artifactId>
       <version>${jersey.version}</version>
     </dependency>
 
-    <!-- Jersey servlet integration -->
+    <!-- Jersey servlet integration (important for web.xml or @ApplicationPath) -->
     <dependency>
       <groupId>org.glassfish.jersey.containers</groupId>
-      <artifactId>jersey-container-servlet-core</artifactId>
+      <artifactId>jersey-container-servlet</artifactId>
+      <version>${jersey.version}</version>
+    </dependency>
+
+    <!-- Jersey common (supports annotation scanning) -->
+    <dependency>
+      <groupId>org.glassfish.jersey.core</groupId>
+      <artifactId>jersey-common</artifactId>
       <version>${jersey.version}</version>
     </dependency>
 
@@ -43,7 +51,7 @@
 
   <build>
     <plugins>
-      <!-- Compiler plugin for Java 11 -->
+      <!-- Java 11 compilation -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -54,16 +62,16 @@
         </configuration>
       </plugin>
 
-      <!-- WAR packaging -->
+      <!-- WAR plugin config -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
         <version>3.3.2</version>
         <configuration>
-          <failOnMissingWebXml>false</failOnMissingWebXml> <!-- Only if using @ApplicationPath instead of web.xml -->
+          <failOnMissingWebXml>false</failOnMissingWebXml>
         </configuration>
       </plugin>
     </plugins>
   </build>
-</project>
 
+</project>
