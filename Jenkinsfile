@@ -24,12 +24,14 @@ node {
     }
 
     stage('deploy') {
-      withCredentials([usernamePassword(
-        credentialsId: 'AzureServicePrincipal',
-        usernameVariable: 'AZURE_CLIENT_ID',
-        passwordVariable: 'AZURE_CLIENT_SECRET'
-      )]) {
+      def resourceGroup = 'jenkins-get-started-rg'
+      def webAppName = 'jenkins-demo-app123'
 
+      withCredentials([usernamePassword(
+          credentialsId: 'AzureServicePrincipal',
+          usernameVariable: 'AZURE_CLIENT_ID',
+          passwordVariable: 'AZURE_CLIENT_SECRET'
+      )]) {
         sh '''
           az login --service-principal \
             --username $AZURE_CLIENT_ID \
@@ -43,24 +45,16 @@ node {
             --name jenkins-demo-app123 \
             --src-path target/calculator-1.0.war \
             --type war
-
-          az logout
         '''
       }
-    }
 
-    // Optional: FTP upload block (commented)
-    /*
-    stage('ftp-upload') {
-      def resourceGroup = 'jenkins-get-started-rg'
-      def webAppName = 'jenkins-demo-app123'
-
-      def pubProfilesJson = sh(script: "az webapp deployment list-publishing-profiles -g $resourceGroup -n $webAppName", returnStdout: true)
+      // Optional: If you want FTP upload too
+      // Uncomment below only if FTP upload is needed
+      /*
+      def pubProfilesJson = sh script: "az webapp deployment list-publishing-profiles -g $resourceGroup -n $webAppName", returnStdout: true
       def ftpProfile = getFtpPublishProfile(pubProfilesJson)
-
       sh "curl -T target/calculator-1.0.war $ftpProfile.url/webapps/ROOT.war -u '$ftpProfile.username:$ftpProfile.password'"
-    }
-    */
-  }
-}
+      */
 
+      sh 'az logout'
+    
