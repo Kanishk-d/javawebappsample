@@ -20,7 +20,10 @@ node {
     }
 
     stage('build') {
-      sh 'mvn clean package'
+      sh '''
+        mvn clean package
+        mv target/calculator-1.0.war target/ROOT.war
+      '''
     }
 
     stage('deploy') {
@@ -43,17 +46,16 @@ node {
           az webapp deploy \
             --resource-group jenkins-get-started-rg \
             --name jenkins-demo-app123 \
-            --src-path target/calculator-1.0.war \
+            --src-path target/ROOT.war \
             --type war
         '''
       }
 
-      // Optional: If you want FTP upload too
-      // Uncomment below only if FTP upload is needed
+      // Optional FTP deployment (commented out)
       /*
       def pubProfilesJson = sh script: "az webapp deployment list-publishing-profiles -g $resourceGroup -n $webAppName", returnStdout: true
       def ftpProfile = getFtpPublishProfile(pubProfilesJson)
-      sh "curl -T target/calculator-1.0.war $ftpProfile.url/webapps/ROOT.war -u '$ftpProfile.username:$ftpProfile.password'"
+      sh "curl -T target/ROOT.war $ftpProfile.url/webapps/ROOT.war -u '$ftpProfile.username:$ftpProfile.password'"
       */
 
       sh 'az logout'
