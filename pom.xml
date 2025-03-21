@@ -45,6 +45,14 @@
       <version>9.1</version>
     </dependency>
 
+    <!-- JAX-RS API -->
+    <dependency>
+      <groupId>javax.ws.rs</groupId>
+      <artifactId>javax.ws.rs-api</artifactId>
+      <version>2.1.1</version>
+      <scope>provided</scope>
+    </dependency>
+
     <!-- Servlet API (provided by container like Tomcat) -->
     <dependency>
       <groupId>javax.servlet</groupId>
@@ -79,4 +87,3 @@
     </plugins>
   </build>
 </project>
-
