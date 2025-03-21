@@ -1,64 +1,93 @@
 import groovy.json.JsonSlurper
-
-def getFtpPublishProfile(def publishProfilesJson) {
-  def pubProfiles = new JsonSlurper().parseText(publishProfilesJson)
-  for (p in pubProfiles) {
-    if (p['publishMethod'] == 'FTP') {
-      return [url: p.publishUrl, username: p.userName, password: p.userPWD]
-    }
-  }
-}
-
-node {
-  withEnv([
-    'AZURE_SUBSCRIPTION_ID=a778bbf9-56d1-4e99-b19a-0ecd2b322cf8',
-    'AZURE_TENANT_ID=a9e61550-cf79-4349-83d3-dec5440cc70c'
-  ]) {
-
-    stage('init') {
-      checkout scm
-    }
-
-    stage('build') {
-      sh '''
-        mvn clean package
-        mv target/calculator-1.0.war target/ROOT.war
-      '''
-    }
-
-    stage('deploy') {
-      def resourceGroup = 'jenkins-get-started-rg'
-      def webAppName = 'jenkins-demo-app123'
-
-      withCredentials([usernamePassword(
-          credentialsId: 'AzureServicePrincipal',
-          usernameVariable: 'AZURE_CLIENT_ID',
-          passwordVariable: 'AZURE_CLIENT_SECRET'
-      )]) {
-        sh '''
-          az login --service-principal \
-            --username $AZURE_CLIENT_ID \
-            --password $AZURE_CLIENT_SECRET \
-            --tenant $AZURE_TENANT_ID
-
-          az account set --subscription $AZURE_SUBSCRIPTION_ID
-
-          az webapp deploy \
-            --resource-group jenkins-get-started-rg \
-            --name jenkins-demo-app123 \
-            --src-path target/ROOT.war \
-            --type war
-        '''
-      }
-
-      // Optional FTP deployment (commented out)
-      /*
-      def pubProfilesJson = sh script: "az webapp deployment list-publishing-profiles -g $resourceGroup -n $webAppName", returnStdout: true
-      def ftpProfile = getFtpPublishProfile(pubProfilesJson)
-      sh "curl -T target/ROOT.war $ftpProfile.url/webapps/ROOT.war -u '$ftpProfile.username:$ftpProfile.password'"
-      */
-
-      sh 'az logout'
-    }
-  }
-}
+ 
+ def getFtpPublishProfile(def publishProfilesJson) {
+   def pubProfiles = new JsonSlurper().parseText(publishProfilesJson)
+   for (p in pubProfiles)
+     if (p['publishMethod'] == 'FTP')
+   for (p in pubProfiles) {
+     if (p['publishMethod'] == 'FTP') {
+       return [url: p.publishUrl, username: p.userName, password: p.userPWD]
+     }
+   }
+ }
+ 
+ node {
+   withEnv(['AZURE_SUBSCRIPTION_ID=a778bbf9-56d1-4e99-b19a-0ecd2b322cf8',
+         'AZURE_TENANT_ID=a9e61550-cf79-4349-83d3-dec5440cc70c']) {
+   withEnv([
+     'AZURE_SUBSCRIPTION_ID=a778bbf9-56d1-4e99-b19a-0ecd2b322cf8',
+     'AZURE_TENANT_ID=a9e61550-cf79-4349-83d3-dec5440cc70c'
+   ]) {
+ 
+     stage('init') {
+       checkout scm
+     }
+   
+ 
+     stage('build') {
+       sh 'mvn clean package'
+     }
+   
+ 
+     stage('deploy') {
+       def resourceGroup = 'jenkins-get-started-rg'
+       def webAppName = '<app_name>'
+       // login Azure
+ stage('deploy') {
+     withCredentials([usernamePassword(
+         credentialsId: 'AzureServicePrincipal',
+         usernameVariable: 'AZURE_CLIENT_ID',
+         passwordVariable: 'AZURE_CLIENT_SECRET'
+     )]) {
+       def webAppName = 'jenkins-demo-app123'
+ 
+       withCredentials([usernamePassword(
+           credentialsId: 'AzureServicePrincipal',
+           usernameVariable: 'AZURE_CLIENT_ID',
+           passwordVariable: 'AZURE_CLIENT_SECRET'
+       )]) {
+         sh '''
+             az login --service-principal \
+               --username $AZURE_CLIENT_ID \
+               --password $AZURE_CLIENT_SECRET \
+               --tenant a9e61550-cf79-4349-83d3-dec5440cc70c
+ 
+             az account set --subscription a778bbf9-56d1-4e99-b19a-0ecd2b322cf8
+ 
+             az webapp deploy \
+               --resource-group jenkins-get-started-rg \
+               --name jenkins-demo-app123 \
+               --src-path target/calculator-1.0.war \
+               --type war
+           az login --service-principal \
+             --username $AZURE_CLIENT_ID \
+             --password $AZURE_CLIENT_SECRET \
+             --tenant $AZURE_TENANT_ID
+ 
+           az account set --subscription $AZURE_SUBSCRIPTION_ID
+ 
+           az webapp deploy \
+             --resource-group jenkins-get-started-rg \
+             --name jenkins-demo-app123 \
+             --src-path target/calculator-1.0.war \
+             --type war
+         '''
+     }
+ }//
+       // get publish settings
+       }
+ 
+       // Optional: If you want FTP upload too
+       // Uncomment below only if FTP upload is needed
+       /*
+       def pubProfilesJson = sh script: "az webapp deployment list-publishing-profiles -g $resourceGroup -n $webAppName", returnStdout: true
+       def ftpProfile = getFtpPublishProfile pubProfilesJson
+       // upload package
+       def ftpProfile = getFtpPublishProfile(pubProfilesJson)
+       sh "curl -T target/calculator-1.0.war $ftpProfile.url/webapps/ROOT.war -u '$ftpProfile.username:$ftpProfile.password'"
+       // log out
+       */
+ 
+       sh 'az logout'
+     }
+   }
