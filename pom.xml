@@ -62,28 +62,34 @@
       </plugin>
     </plugins>
   </build>
-  <dependencies>
 <dependencies>
+  <!-- Existing dependencies -->
+  
   <dependency>
     <groupId>org.glassfish.jersey.containers</groupId>
     <artifactId>jersey-container-servlet-core</artifactId>
     <version>2.22.2</version>
   </dependency>
+
   <dependency>
     <groupId>org.glassfish.jersey.media</groupId>
     <artifactId>jersey-media-json-jackson</artifactId>
     <version>2.22.2</version>
   </dependency>
+
   <dependency>
     <groupId>org.glassfish.jersey.core</groupId>
     <artifactId>jersey-server</artifactId>
     <version>2.22.2</version>
   </dependency>
+
+  <!-- Added dependencies -->
   <dependency>
     <groupId>org.glassfish.jersey.inject</groupId>
     <artifactId>jersey-hk2</artifactId>
     <version>2.22.2</version>
   </dependency>
+
   <dependency>
     <groupId>javax.servlet</groupId>
     <artifactId>javax.servlet-api</artifactId>
