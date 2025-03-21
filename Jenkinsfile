@@ -24,8 +24,8 @@ node {
       // login Azure
 withCredentials([usernamePassword(
     credentialsId: 'AzureServicePrincipal',
-    usernameVariable: 'd9fd06c9-2139-4283-a06a-f154db583b1e',
-    passwordVariable: 'xTQ8Q~rXqv120Pd_H6qM9ZdjO_Wr7axXNDbETc_r'
+    usernameVariable: 'AZURE_CLIENT_ID',
+    passwordVariable: 'AZURE_CLIENT_SECRET'
 )]) {
     sh '''
         az login --service-principal \
@@ -36,7 +36,6 @@ withCredentials([usernamePassword(
         az account set --subscription a778bbf9-56d1-4e99-b19a-0ecd2b322cf8
     '''
 }
-
       // get publish settings
       def pubProfilesJson = sh script: "az webapp deployment list-publishing-profiles -g $resourceGroup -n $webAppName", returnStdout: true
       def ftpProfile = getFtpPublishProfile pubProfilesJson
