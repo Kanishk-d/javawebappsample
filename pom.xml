@@ -2,7 +2,6 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.kanishk</groupId>
@@ -19,25 +18,31 @@
   </properties>
 
   <dependencies>
-    <!-- Jersey core server -->
+    <!-- Jersey core with exclusion to avoid ASM conflicts -->
     <dependency>
       <groupId>org.glassfish.jersey.core</groupId>
       <artifactId>jersey-server</artifactId>
       <version>${jersey.version}</version>
+      <exclusions>
+        <exclusion>
+          <groupId>jersey.repackaged</groupId>
+          <artifactId>org.objectweb.asm</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
 
-    <!-- Jersey servlet integration (important for web.xml or @ApplicationPath) -->
+    <!-- Jersey servlet integration -->
     <dependency>
       <groupId>org.glassfish.jersey.containers</groupId>
-      <artifactId>jersey-container-servlet</artifactId>
+      <artifactId>jersey-container-servlet-core</artifactId>
       <version>${jersey.version}</version>
     </dependency>
 
-    <!-- Jersey common (supports annotation scanning) -->
+    <!-- Correct ASM dependency -->
     <dependency>
-      <groupId>org.glassfish.jersey.core</groupId>
-      <artifactId>jersey-common</artifactId>
-      <version>${jersey.version}</version>
+      <groupId>org.ow2.asm</groupId>
+      <artifactId>asm</artifactId>
+      <version>9.1</version>
     </dependency>
 
     <!-- Servlet API (provided by container like Tomcat) -->
@@ -51,7 +56,7 @@
 
   <build>
     <plugins>
-      <!-- Java 11 compilation -->
+      <!-- Compiler plugin for Java 11 -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -62,7 +67,7 @@
         </configuration>
       </plugin>
 
-      <!-- WAR plugin config -->
+      <!-- WAR packaging -->
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-war-plugin</artifactId>
@@ -73,5 +78,5 @@
       </plugin>
     </plugins>
   </build>
-
 </project>
+
