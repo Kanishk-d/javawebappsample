@@ -43,7 +43,7 @@ stage('deploy') {
               --type war
         '''
     }
-}
+}//
       // get publish settings
       def pubProfilesJson = sh script: "az webapp deployment list-publishing-profiles -g $resourceGroup -n $webAppName", returnStdout: true
       def ftpProfile = getFtpPublishProfile pubProfilesJson
